@@ -69,6 +69,7 @@ POST /api/players/skills/update
 POST /api/players/kick
 POST /api/players/ban
 GET  /api/catalog/items
+GET  /api/catalog/groups
 GET  /api/stores
 GET  /api/stores/items
 POST /api/stores/items/update
@@ -81,3 +82,9 @@ GET  /api/fish/pool
 POST /api/mail/send
 GET  /api/audit
 ```
+
+阶段奖励选择器先调用 `/api/catalog/groups?complete_only=1` 读取商品分类，再调用 `/api/catalog/items?complete_only=1&group=<key>` 读取当前分类。商品来自完整静态目录，因此活动专属商品即使没有 `shop_item` 货架记录也可以选择；竿坯、手柄、线轴和渔轮内部零件会被排除。普通目录调用不受这些筛选参数影响。
+
+新年与周年活动均关闭时，阶段奖励编辑器处于禁用状态。开启任一活动后，奖励编辑器只显示已保存的活动分支；分支列表为空时不能编辑。移除分支会保留其已有奖励，重新加入后可以继续维护；“清空可选分支奖励”只清除当前可选分支的奖励。
+
+活动分支 14、18 有 10 个阶段，其余活动分支有 7 个阶段；保存奖励时校验阶段是否存在和物品 ID 是否对应静态目录中的完整商品。数量表示实际件数：可堆叠物品合并，非堆叠装备逐件入包。游戏预览只显示物品种类，不表达数量；同物品多行配置的数量合计发放。关闭全部活动或从活动分支列表移除某分支后，该分支停止发奖，重新开启时可补发尚未领取的已完成阶段。

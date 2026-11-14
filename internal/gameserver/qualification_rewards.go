@@ -255,3 +255,20 @@ func append811Row(container, line *proto.Value) *proto.Value {
 	}
 	return proto.Args(proto.S("173"), line)
 }
+
+// append811Rows 合并已经包装好的 args(173) 礼物行数组。
+// 阶段奖励通过 giftRows811 一次生成整个容器；801.f4 要求容器内直接包含
+// 811 对象，因此追加容器元素，保持一层 args(173) 包装。
+func append811Rows(container, rows *proto.Value) *proto.Value {
+	if rows == nil || rows.Kind == proto.KindNull {
+		return container
+	}
+	if rows.Kind != proto.KindArgs || rows.ArgCodeStr() != "173" {
+		return append811Row(container, rows)
+	}
+	if container != nil && container.Kind == proto.KindArgs && container.ArgCodeStr() == "173" {
+		container.Items = append(container.Items, rows.Items...)
+		return container
+	}
+	return rows
+}
